@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 11
   m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
@@ -98,8 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: b5825dde7d4217f4d998a7adbff91295,
-    type: 2}
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -119,8 +118,6 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
-    maxJobWorkers: 0
-    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -172,7 +169,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -197,7 +193,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &412739646
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -359,7 +354,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -384,7 +378,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &804408981
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -421,6 +414,7 @@ GameObject:
   - component: {fileID: 908407354}
   - component: {fileID: 908407353}
   - component: {fileID: 908407358}
+  - component: {fileID: 908407359}
   m_Layer: 0
   m_Name: Bot
   m_TagString: Untagged
@@ -446,7 +440,7 @@ MonoBehaviour:
   Target: {fileID: 412739643}
   ObstacleMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
 --- !u!65 &908407354
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -475,7 +469,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -500,7 +493,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &908407356
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -516,13 +508,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 908407352}
-  m_LocalRotation: {x: -0, y: -0.8928815, z: -0, w: 0.45029163}
+  m_LocalRotation: {x: -0, y: 0.8971592, z: -0, w: -0.44170728}
   m_LocalPosition: {x: 0, y: -0.35, z: 1.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: -126.475, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 232.426, z: 0}
 --- !u!54 &908407358
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -539,6 +531,40 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &908407359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908407352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4533ff89c4fbccf428b0001f2577f2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  CurrentState: 
+  LastDecisionMade: 
+  LogVerbose: 0
+  States:
+  - id: 0
+  - id: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: AttackState, ns: FSM.Example.States, asm: Assembly-CSharp}
+      data:
+        Decisions: []
+    00000001:
+      type: {class: MovementState, ns: FSM.Example.States, asm: Assembly-CSharp}
+      data:
+        Decisions: []
+        PathPoints: []
+        TargetDetectionRange: 10
+        TargetSearchInterval: 0.5
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

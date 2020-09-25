@@ -6,7 +6,8 @@ using System.Collections.Generic;
 
 namespace FSM
 {
-	public abstract class State : MonoBehaviour
+	[Serializable]
+	public abstract class State
 	{
 		protected StateMachine StateMachine;
 		protected Context Context;

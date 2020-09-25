@@ -8,6 +8,7 @@ namespace FSM
 	/// </summary>
 	public class Context
 	{
+		public GameObject Owner;
 		//TODO palce your stuff that need to be shared between states here
 		public float
 			Health; // use health component or where ever you store ur health instead of this

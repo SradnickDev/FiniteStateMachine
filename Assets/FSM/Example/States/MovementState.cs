@@ -3,6 +3,69 @@ using UnityEngine;
 
 namespace FSM.Example.States
 {
+	public class Player : MonoBehaviour
+	{
+		private void Start()
+		{
+			PlayerTracker.Instance.Add(this);
+		}
+
+		private void OnDestroy()
+		{
+			PlayerTracker.Instance.Remove(this);
+		}
+	}
+
+	public class PlayerTracker : MonoBehaviour
+	{
+		public static PlayerTracker Instance;
+
+		public List<Player> Players { get; private set; } = new List<Player>();
+
+		//----------------------------------------------------------------
+		private void Awake()
+		{
+			Instance = this;
+		}
+
+		//----------------------------------------------------------------
+		public IEnumerable<Player> GetValidAllies(Player source)
+		{
+			foreach (var player in Players)
+			{
+				if (player != null && player.CompareTag(source.tag) && player != source)
+				{
+					yield return player;
+				}
+			}
+		}
+
+		//----------------------------------------------------------------
+		public IEnumerable<Player> GetValidEnemies(Player source)
+		{
+			foreach (var player in Players)
+			{
+				if (player != null && !player.CompareTag(source.tag) && player != source)
+				{
+					yield return player;
+				}
+			}
+		}
+
+		//----------------------------------------------------------------
+		public void Add(Player newPlayer)
+		{
+			if (!Players.Contains(newPlayer))
+			{
+				Players.Add(newPlayer);
+			}
+		}
+
+		//----------------------------------------------------------------
+		public void Remove(Player player) => Players.Remove(player);
+	}
+
+	[System.Serializable]
 	public class MovementState : State
 	{
 		private const int MinPathPointDistance = 3;
@@ -11,7 +74,7 @@ namespace FSM.Example.States
 		[SerializeField] private float TargetDetectionRange = 10;
 		[SerializeField] private float TargetSearchInterval = 0.5f;
 
-		private int m_nextPathIdx;
+		private int m_nextPathIdx = 0;
 		private float m_nextSearch;
 
 		//----------------------------------------------------------------
@@ -36,7 +99,9 @@ namespace FSM.Example.States
 		//----------------------------------------------------------------
 		private void FollowPath()
 		{
-			var distanceToPoint = Vector3.Distance(transform.position, PathPoints[m_nextPathIdx].position);
+			var distanceToPoint =
+				Vector3.Distance(Context.Owner.transform.position,
+								 PathPoints[m_nextPathIdx].position);
 			var reachedPoint = distanceToPoint <= MinPathPointDistance;
 
 			if (reachedPoint)
@@ -50,7 +115,8 @@ namespace FSM.Example.States
 		//----------------------------------------------------------------
 		private void FindNearestPathPoint()
 		{
-			PathPoints.FindNearest(transform.position, out m_nextPathIdx, TargetDetectionRange);
+			PathPoints.FindNearest(Context.Owner.transform.position, out m_nextPathIdx,
+								   TargetDetectionRange);
 		}
 
 		//----------------------------------------------------------------
@@ -67,7 +133,8 @@ namespace FSM.Example.States
 			//interval search
 			if (Time.time >= m_nextSearch)
 			{
-				target = Context.AvailableTargets.FindNearest(transform.position, out _);
+				target = Context.AvailableTargets.FindNearest(Context.Owner.transform.position,
+															  out _);
 				m_nextSearch = Time.time + TargetSearchInterval;
 			}
 

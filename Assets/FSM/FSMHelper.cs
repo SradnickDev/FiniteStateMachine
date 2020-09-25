@@ -172,7 +172,7 @@ namespace FSM
 		//----------------------------------------------------------------
 		public static string Name<T>(this T target)
 		{
-			return target == null ? "none" : target.GetType().Name;
+			return target == null ? "" : target.GetType().Name;
 		}
 	}
 }

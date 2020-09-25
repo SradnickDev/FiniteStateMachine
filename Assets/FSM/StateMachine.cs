@@ -8,9 +8,7 @@ using UnityEngine.Events;
 namespace FSM
 {
 	[Serializable]
-	public class OnStateChanged : UnityEvent<string>
-	{
-	}
+	public class OnStateChanged : UnityEvent<string> { }
 
 	public abstract class StateMachine : MonoBehaviour
 	{
@@ -21,8 +19,20 @@ namespace FSM
 		[ReadOnly] public string CurrentState;
 		[ReadOnly] public string LastDecisionMade;
 
-		[SerializeField] protected State StartState;
+		protected string StartState => States.Count > 0 ? States[0].Name() : "";
 		[SerializeField] private bool LogVerbose = false;
+
+		[TypeFilter("GetFilteredTypeList")]
+		[SerializeReference] private List<State> States = new List<State>();
+
+		public IEnumerable<Type> GetFilteredTypeList()
+		{
+			var retVal = typeof(State).Assembly.GetTypes()
+									  .Where(x => !x.IsAbstract)
+									  .Where(x => typeof(State).IsAssignableFrom(x));
+
+			return retVal;
+		}
 
 		/// <summary>
 		/// Shared between all states.But owned and created from a StateMachine.
@@ -42,15 +52,22 @@ namespace FSM
 		private void Initialize()
 		{
 			m_states = new Dictionary<string, State>();
-			Context = new Context();
+			Context = new Context
+			{
+				Owner = gameObject
+			};
+			
+			foreach (var state in States)
+			{
+				AddState(state);
+			}
 
-			//order is important
 			OnInitialize();
 
-			if (StartState != null)
+			if (!string.IsNullOrEmpty(StartState))
 			{
 				Active = true;
-				ChangeState(StartState.Name());
+				ChangeState(StartState);
 			}
 			else if (StartState == null)
 			{
@@ -86,7 +103,7 @@ namespace FSM
 				m_currentState.OnEnter();
 				CurrentState = newState;
 				FSMHelper.Log(LogVerbose,
-					$"State changed from {m_previousState.Name()} to {m_currentState.Name()}");
+							  $"State changed from {m_previousState.Name()} to {m_currentState.Name()}");
 			}
 		}
 
@@ -98,6 +115,7 @@ namespace FSM
 		{
 			if (!m_states.ContainsKey(state.Name()))
 			{
+				state.Setup(this);
 				m_states.Add(state.Name(), state);
 				FSMHelper.Log(LogVerbose, $"New State added : {state.Name()}");
 			}
@@ -130,9 +148,8 @@ namespace FSM
 			if (m_currentState != null)
 			{
 				m_currentState.OnUpdate();
+				UpdateDecisions();
 			}
-
-			UpdateDecisions();
 		}
 
 		/// <summary>
@@ -140,11 +157,15 @@ namespace FSM
 		/// </summary>
 		private void UpdateDecisions()
 		{
-			foreach (var decision in m_currentState.Decisions.Where(decision =>
-				decision.IsValid(Context)))
+			if (m_currentState.Decisions == null) return;
+
+			foreach (var decision in m_currentState.Decisions)
 			{
-				LastDecisionMade = decision.Name();
-				FSMHelper.Log(LogVerbose, $"Decisions validated : {LastDecisionMade}");
+				if (decision.IsValid(Context))
+				{
+					LastDecisionMade = decision.Name();
+					FSMHelper.Log(LogVerbose, $"Decisions validated : {LastDecisionMade}");
+				}
 			}
 		}
 	}
