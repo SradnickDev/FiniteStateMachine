@@ -1,7 +1,16 @@
+using UnityEngine;
+
 namespace FSM.Example.States
 {
+	[System.Serializable]
 	public class AttackState : State
 	{
+		[SerializeField] private Weapon Weapon = null;
+		[SerializeField] private float AttackDistance = 2f;
+		[SerializeField] private float FieldOfView = 2f;
+		[SerializeField] private LayerMask ObstacleMask = new LayerMask();
+		[SerializeField] private float HitTestThickness = 0.5f;
+
 		//----------------------------------------------------------------
 		public override void OnEnter()
 		{
@@ -17,21 +26,53 @@ namespace FSM.Example.States
 		//----------------------------------------------------------------
 		public override void OnUpdate()
 		{
+			Debug.Log(Context.CurrentTarget);
+			if (Context.CurrentTarget == null) return;
 			FollowTarget();
-
-			//TODO Follow Target
-			//TODO if target is null/dead or something like this go to MovementState
-			//TODO Validate if bot can attack and attack
-			//TODO if target is to far, start next state e.g. find nearst obstalce away from target and move there to hide
-			//after that start movementstate again
+			ShootTarget();
 		}
 
 		private void FollowTarget()
 		{
 			Context.OwnerAgent.SetDestination(Context.CurrentTarget.transform.position);
+
+			Context.OwnerAgent.isStopped = Context.OwnerAgent.remainingDistance <= AttackDistance / 2f;
+
+			if (Context.OwnerAgent.remainingDistance <= AttackDistance / 2f)
+			{
+				Vector3 direction = (Context.CurrentTarget.transform.position - Context.Owner.transform.position).normalized;
+				Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z)); 
+				Context.Owner.transform.rotation = lookRotation;
+			}
+		}
+
+		private void ShootTarget()
+		{
+			var isVisible = FSMHelper.IsInsideConeSphereHitTest(Context.Owner.transform,
+																Context.CurrentTarget.transform,
+																AttackDistance, FieldOfView, ObstacleMask,
+																HitTestThickness);
+			if(isVisible)
+			{
+				Weapon.Fire();
+			}
+		}
+
+		public override void DrawGizmos()
+		{
+			FSMHelper.DrawCone(Context.Owner.transform, AttackDistance, FieldOfView);
+			if (Context.CurrentTarget != null)
+			{
+				FSMHelper.DrawSphereCast(Context.Owner.transform, Context.CurrentTarget.transform,
+										 HitTestThickness);
+			}
 		}
 
 		//----------------------------------------------------------------
-		public override void OnLeave() { }
+		public override void OnLeave()
+		{
+			Context.OwnerAgent.isStopped = false;
+			Context.CurrentTarget = null;
+		}
 	}
 }

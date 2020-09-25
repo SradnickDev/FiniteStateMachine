@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace FSM
 		/// <param name="maxRange">Optional: Default infinity, defines max distance.</param>
 		/// <returns></returns>
 		//----------------------------------------------------------------
-		public static T FindNearest<T>(this List<T> list, Vector3 origin, out int index,
+		public static T FindNearest<T>(this IList<T> list, Vector3 origin, out int index,
 			float maxRange = Mathf.Infinity) where T : Component
 		{
 			var lastDistance = maxRange;
@@ -32,6 +33,26 @@ namespace FSM
 			}
 
 			return index == -1 ? null : list[index];
+		}
+
+		public static T AnyOne<T>(this IList<T> list)
+		{
+			return list[Random.Range(0, list.Count)];
+		}
+		public static List<GameObject> FindNearest(this List<GameObject> list, Vector3 origin,float maxRange)
+		{
+			var retVal = new List<GameObject>();
+			foreach (var target in list)
+			{
+				if (target == null) continue;
+				var distance = Vector3.Distance(origin, target.transform.position);
+				if (distance <= maxRange)
+				{
+					retVal.Add(target);
+				}
+			}
+
+			return retVal;
 		}
 
 		/// <summary>

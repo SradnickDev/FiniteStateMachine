@@ -102,13 +102,14 @@ namespace FSM
 			if (m_states.ContainsKey(newState) && !string.Equals(CurrentState, newState))
 			{
 				StateChanged?.Invoke(newState);
-				m_previousState?.OnLeave();
+				
 				m_previousState = m_currentState;
+				m_previousState?.OnLeave();
+				
 				m_currentState = m_states[newState];
 				m_currentState.OnEnter();
 				CurrentState = newState;
-				FSMHelper.Log(LogVerbose,
-							  $"State changed from {m_previousState.Name()} to {m_currentState.Name()}");
+				FSMHelper.Log(LogVerbose, $"State changed from {m_previousState.Name()} to {m_currentState.Name()}");
 			}
 		}
 

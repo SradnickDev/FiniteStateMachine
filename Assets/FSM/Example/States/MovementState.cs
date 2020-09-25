@@ -6,14 +6,11 @@ namespace FSM.Example.States
 	[System.Serializable]
 	public class MovementState : State
 	{
-		private const int MinPathPointDistance = 3;
-
 		[SerializeField] private List<Transform> PathPoints = new List<Transform>();
 		[SerializeField] private float TargetSearchInterval = 0.5f;
 		[SerializeField] private float TargetDetectionRange = 10;
 		[SerializeField] private float FieldOfView = 180;
 		[SerializeField] private LayerMask ObstacleMask = new LayerMask();
-		[SerializeField] private float HitTestThickness = 0.5f;
 		private int m_nextPathIdx = 0;
 		private float m_nextSearch;
 
@@ -21,7 +18,7 @@ namespace FSM.Example.States
 		public override void OnEnter()
 		{
 			m_nextSearch = 0;
-
+			m_nextPathIdx = 0;
 			//find nearest waypoint, maybe if the state will be entered the bot is to far from the old waypoint
 			//so find a new one makes more sense
 			FindNearestPathPoint();
@@ -42,7 +39,7 @@ namespace FSM.Example.States
 			var distanceToPoint =
 				Vector3.Distance(Context.Owner.transform.position,
 								 PathPoints[m_nextPathIdx].position);
-			var reachedPoint = distanceToPoint <= MinPathPointDistance;
+			var reachedPoint = distanceToPoint <= Context.OwnerAgent.stoppingDistance;
 
 			if (reachedPoint)
 			{
@@ -80,11 +77,10 @@ namespace FSM.Example.States
 
 			if (target == null) return;
 
-			var isValidTarget = FSMHelper.IsInsideConeSphereHitTest(Context.Owner.transform,
+			var isValidTarget = FSMHelper.IsInsideConeLineHitTest(Context.Owner.transform,
 																	target.transform,
 																	TargetDetectionRange,
-																	FieldOfView, ObstacleMask,
-																	HitTestThickness);
+																	FieldOfView, ObstacleMask);
 			if (!isValidTarget) return;
 
 			//if valid target is available
@@ -99,11 +95,6 @@ namespace FSM.Example.States
 		public override void DrawGizmos()
 		{
 			FSMHelper.DrawCone(Context.Owner.transform, TargetDetectionRange, FieldOfView);
-			if (Context.CurrentTarget != null)
-			{
-				Debug.Log(Context.CurrentTarget);
-				FSMHelper.DrawSphereCast(Context.Owner.transform,Context.CurrentTarget.transform,HitTestThickness);
-			}
 		}
 
 		//----------------------------------------------------------------
