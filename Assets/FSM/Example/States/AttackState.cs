@@ -17,11 +17,18 @@ namespace FSM.Example.States
 		//----------------------------------------------------------------
 		public override void OnUpdate()
 		{
+			FollowTarget();
+
 			//TODO Follow Target
 			//TODO if target is null/dead or something like this go to MovementState
 			//TODO Validate if bot can attack and attack
 			//TODO if target is to far, start next state e.g. find nearst obstalce away from target and move there to hide
 			//after that start movementstate again
+		}
+
+		private void FollowTarget()
+		{
+			Context.OwnerAgent.SetDestination(Context.CurrentTarget.transform.position);
 		}
 
 		//----------------------------------------------------------------

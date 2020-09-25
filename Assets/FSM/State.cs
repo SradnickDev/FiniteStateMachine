@@ -18,8 +18,8 @@ namespace FSM
 		public IEnumerable<Type> GetFilteredTypeList()
 		{
 			var retVal = typeof(Decision).Assembly.GetTypes()
-				.Where(x => !x.IsAbstract)
-				.Where(x => typeof(Decision).IsAssignableFrom(x));
+										 .Where(x => !x.IsAbstract)
+										 .Where(x => typeof(Decision).IsAssignableFrom(x));
 
 			return retVal;
 		}
@@ -51,5 +51,7 @@ namespace FSM
 		{
 			StateMachine.ChangeState(typeName);
 		}
+
+		public virtual void DrawGizmos() { }
 	}
 }

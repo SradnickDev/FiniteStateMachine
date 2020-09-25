@@ -125,8 +125,8 @@ namespace FSM
 			Gizmos.DrawWireSphere(origin.position, radius);
 #endif
 			Gizmos.color = lineColor;
-			Gizmos.DrawRay(origin.position, leftOffset * radius);
-			Gizmos.DrawRay(origin.position, rightOffset * radius);
+			Debug.DrawRay(origin.position,leftOffset * radius,lineColor);
+			Debug.DrawRay(origin.position,rightOffset * radius,lineColor);
 		}
 
 		/// <summary>

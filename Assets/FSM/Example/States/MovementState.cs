@@ -3,77 +3,17 @@ using UnityEngine;
 
 namespace FSM.Example.States
 {
-	public class Player : MonoBehaviour
-	{
-		private void Start()
-		{
-			PlayerTracker.Instance.Add(this);
-		}
-
-		private void OnDestroy()
-		{
-			PlayerTracker.Instance.Remove(this);
-		}
-	}
-
-	public class PlayerTracker : MonoBehaviour
-	{
-		public static PlayerTracker Instance;
-
-		public List<Player> Players { get; private set; } = new List<Player>();
-
-		//----------------------------------------------------------------
-		private void Awake()
-		{
-			Instance = this;
-		}
-
-		//----------------------------------------------------------------
-		public IEnumerable<Player> GetValidAllies(Player source)
-		{
-			foreach (var player in Players)
-			{
-				if (player != null && player.CompareTag(source.tag) && player != source)
-				{
-					yield return player;
-				}
-			}
-		}
-
-		//----------------------------------------------------------------
-		public IEnumerable<Player> GetValidEnemies(Player source)
-		{
-			foreach (var player in Players)
-			{
-				if (player != null && !player.CompareTag(source.tag) && player != source)
-				{
-					yield return player;
-				}
-			}
-		}
-
-		//----------------------------------------------------------------
-		public void Add(Player newPlayer)
-		{
-			if (!Players.Contains(newPlayer))
-			{
-				Players.Add(newPlayer);
-			}
-		}
-
-		//----------------------------------------------------------------
-		public void Remove(Player player) => Players.Remove(player);
-	}
-
 	[System.Serializable]
 	public class MovementState : State
 	{
 		private const int MinPathPointDistance = 3;
 
 		[SerializeField] private List<Transform> PathPoints = new List<Transform>();
-		[SerializeField] private float TargetDetectionRange = 10;
 		[SerializeField] private float TargetSearchInterval = 0.5f;
-
+		[SerializeField] private float TargetDetectionRange = 10;
+		[SerializeField] private float FieldOfView = 180;
+		[SerializeField] private LayerMask ObstacleMask = new LayerMask();
+		[SerializeField] private float HitTestThickness = 0.5f;
 		private int m_nextPathIdx = 0;
 		private float m_nextSearch;
 
@@ -109,14 +49,13 @@ namespace FSM.Example.States
 				SetNextPathPoint();
 			}
 
-			//TODO movement stuff
+			Context.OwnerAgent.destination = PathPoints[m_nextPathIdx].position;
 		}
 
 		//----------------------------------------------------------------
 		private void FindNearestPathPoint()
 		{
-			PathPoints.FindNearest(Context.Owner.transform.position, out m_nextPathIdx,
-								   TargetDetectionRange);
+			PathPoints.FindNearest(Context.Owner.transform.position, out m_nextPathIdx);
 		}
 
 		//----------------------------------------------------------------
@@ -128,18 +67,24 @@ namespace FSM.Example.States
 		//----------------------------------------------------------------
 		private void SearchTarget()
 		{
-			DummyTarget target = null;
+			if (Context.CurrentTarget != null) return;
+			Player target = null;
 
 			//interval search
 			if (Time.time >= m_nextSearch)
 			{
-				target = Context.AvailableTargets.FindNearest(Context.Owner.transform.position,
-															  out _);
+				target = PlayerTracker.Instance.GetValidEnemies(Context.Owner)
+									  .FindNearest(Context.Owner.transform.position, out _);
 				m_nextSearch = Time.time + TargetSearchInterval;
 			}
 
-			//TODO validate target
-			var isValidTarget = false;
+			if (target == null) return;
+
+			var isValidTarget = FSMHelper.IsInsideConeSphereHitTest(Context.Owner.transform,
+																	target.transform,
+																	TargetDetectionRange,
+																	FieldOfView, ObstacleMask,
+																	HitTestThickness);
 			if (!isValidTarget) return;
 
 			//if valid target is available
@@ -150,6 +95,16 @@ namespace FSM.Example.States
 		}
 
 #endregion
+
+		public override void DrawGizmos()
+		{
+			FSMHelper.DrawCone(Context.Owner.transform, TargetDetectionRange, FieldOfView);
+			if (Context.CurrentTarget != null)
+			{
+				Debug.Log(Context.CurrentTarget);
+				FSMHelper.DrawSphereCast(Context.Owner.transform,Context.CurrentTarget.transform,HitTestThickness);
+			}
+		}
 
 		//----------------------------------------------------------------
 		public override void OnLeave() { }

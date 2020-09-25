@@ -9,11 +9,11 @@ namespace FSM
 
 		public override bool IsValid(Context context)
 		{
-			if (context.Health <= MinHealth && StateMachine.CurrentState != nameof(RunAndHide))
-			{
-				StateMachine.ChangeState(nameof(RunAndHide));
-				return true;
-			}
+			// if (context.Health <= MinHealth && StateMachine.CurrentState != nameof(RunAndHide))
+			// {
+			// 	StateMachine.ChangeState(nameof(RunAndHide));
+			// 	return true;
+			// }
 
 			return false;
 		}

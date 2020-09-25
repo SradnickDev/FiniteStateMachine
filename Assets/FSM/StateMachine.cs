@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FSM.Example.States;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 namespace FSM
@@ -10,6 +12,8 @@ namespace FSM
 	[Serializable]
 	public class OnStateChanged : UnityEvent<string> { }
 
+	[RequireComponent(typeof(Player))]
+	[RequireComponent(typeof(NavMeshAgent))]
 	public abstract class StateMachine : MonoBehaviour
 	{
 		public OnStateChanged StateChanged;
@@ -54,9 +58,10 @@ namespace FSM
 			m_states = new Dictionary<string, State>();
 			Context = new Context
 			{
-				Owner = gameObject
+				Owner = GetComponent<Player>(),
+				OwnerAgent = GetComponent<NavMeshAgent>()
 			};
-			
+
 			foreach (var state in States)
 			{
 				AddState(state);
@@ -166,6 +171,14 @@ namespace FSM
 					LastDecisionMade = decision.Name();
 					FSMHelper.Log(LogVerbose, $"Decisions validated : {LastDecisionMade}");
 				}
+			}
+		}
+
+		private void OnDrawGizmos()
+		{
+			if (m_currentState != null)
+			{
+				m_currentState.DrawGizmos();
 			}
 		}
 	}
