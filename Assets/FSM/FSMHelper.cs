@@ -15,9 +15,10 @@ namespace FSM
 		/// <param name="index">index of nearest T in list</param>
 		/// <param name="maxRange">Optional: Default infinity, defines max distance.</param>
 		/// <returns></returns>
+
 		//----------------------------------------------------------------
 		public static T FindNearest<T>(this IList<T> list, Vector3 origin, out int index,
-			float maxRange = Mathf.Infinity) where T : Component
+									   float maxRange = Mathf.Infinity) where T : Component
 		{
 			var lastDistance = maxRange;
 			index = -1;
@@ -35,16 +36,20 @@ namespace FSM
 			return index == -1 ? null : list[index];
 		}
 
+		//----------------------------------------------------------------
 		public static T AnyOne<T>(this IList<T> list)
 		{
 			return list[Random.Range(0, list.Count)];
 		}
-		public static List<GameObject> FindNearest(this List<GameObject> list, Vector3 origin,float maxRange)
+
+		//----------------------------------------------------------------
+		public static List<GameObject> FindNearest(this List<GameObject> list, Vector3 origin, float maxRange)
 		{
 			var retVal = new List<GameObject>();
 			foreach (var target in list)
 			{
 				if (target == null) continue;
+
 				var distance = Vector3.Distance(origin, target.transform.position);
 				if (distance <= maxRange)
 				{
@@ -63,6 +68,7 @@ namespace FSM
 		/// <param name="radius">Radius of the Cone.</param>
 		/// <param name="fieldOfView">FoV in percentage.</param>
 		/// <returns>True if inside otherwise false.</returns>
+
 		//----------------------------------------------------------------
 		public static bool IsInsideCone(Transform origin, Transform target, float radius, float fieldOfView)
 		{
@@ -72,9 +78,10 @@ namespace FSM
 		/// <summary>
 		/// Adds a line cast to check if the target is behind something.
 		/// </summary>
+
 		//----------------------------------------------------------------
 		public static bool IsInsideConeLineHitTest(Transform origin, Transform target, float radius, float fieldOfView,
-			LayerMask obstacleMask)
+												   LayerMask obstacleMask)
 		{
 			var blocked = Physics.Linecast(origin.position, target.position, obstacleMask);
 			if (blocked) return false;
@@ -85,9 +92,10 @@ namespace FSM
 		/// <summary>
 		/// Adds a sphere cast to check if the target is behind something.
 		/// </summary>
+
 		//----------------------------------------------------------------
 		public static bool IsInsideConeSphereHitTest(Transform origin, Transform target, float radius,
-			float fieldOfView, LayerMask obstacleMask, float sphereRadius)
+													 float fieldOfView, LayerMask obstacleMask, float sphereRadius)
 		{
 			var dir = (target.position - origin.position).normalized;
 			var ray = new Ray(origin.position, dir);
@@ -107,9 +115,10 @@ namespace FSM
 		/// <param name="radius">Radius of the Cone.</param>
 		/// <param name="fieldOfView">FoV in percentage.</param>
 		/// <returns>True if inside otherwise false.</returns>
+
 		//----------------------------------------------------------------
 		public static bool IsInsideCone(Transform origin, Transform target, Vector3 targetOffset, float radius,
-			float fieldOfView)
+										float fieldOfView)
 		{
 			var targetPos = target.position + targetOffset;
 			var fwd = origin.transform.forward;
@@ -129,6 +138,7 @@ namespace FSM
 		/// <param name="origin"></param>
 		/// <param name="radius"></param>
 		/// <param name="fieldOfView"></param>
+
 		//----------------------------------------------------------------
 		public static void DrawCone(Transform origin, float radius, float fieldOfView)
 		{
@@ -146,13 +156,14 @@ namespace FSM
 			Gizmos.DrawWireSphere(origin.position, radius);
 #endif
 			Gizmos.color = lineColor;
-			Debug.DrawRay(origin.position,leftOffset * radius,lineColor);
-			Debug.DrawRay(origin.position,rightOffset * radius,lineColor);
+			Debug.DrawRay(origin.position, leftOffset * radius, lineColor);
+			Debug.DrawRay(origin.position, rightOffset * radius, lineColor);
 		}
 
 		/// <summary>
 		/// To Visualise a sphere-cast.
 		/// </summary>
+
 		//----------------------------------------------------------------
 		public static void DrawSphereCast(Transform origin, Transform target, float radius)
 		{
@@ -190,6 +201,7 @@ namespace FSM
 		/// <summary>
 		/// Returns the name of type.
 		/// </summary>
+
 		//----------------------------------------------------------------
 		public static string Name<T>(this T target)
 		{

@@ -10,7 +10,7 @@ namespace FSM
 	{
 		public Player Owner;
 		public NavMeshAgent OwnerAgent;
-		
+
 		public Player CurrentTarget;
 	}
 }

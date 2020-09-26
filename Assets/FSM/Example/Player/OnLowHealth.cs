@@ -18,8 +18,7 @@ namespace FSM.Example.Player
 
 			var percentage = m_ownerHealth.CurrentHealth / m_ownerHealth.MaxHealth;
 
-			if (percentage <= MinHealthPercentage &&
-				StateMachine.CurrentState != nameof(RunAndHide))
+			if (percentage <= MinHealthPercentage && StateMachine.CurrentState != nameof(RunAndHide))
 			{
 				StateMachine.ChangeState(nameof(RunAndHide));
 				return true;

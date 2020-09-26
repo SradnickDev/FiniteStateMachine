@@ -28,43 +28,47 @@ namespace FSM.Example.States
 		public override void OnUpdate()
 		{
 			if (Context.CurrentTarget == null) return;
+
 			FollowTarget();
 			ShootTarget();
 		}
 
+		//----------------------------------------------------------------
 		private void FollowTarget()
 		{
 			Context.OwnerAgent.SetDestination(Context.CurrentTarget.transform.position);
-
 			Context.OwnerAgent.isStopped = Context.OwnerAgent.remainingDistance <= AttackDistance / 2f;
 
 			if (Context.OwnerAgent.remainingDistance <= AttackDistance / 2f)
 			{
-				Vector3 direction = (Context.CurrentTarget.transform.position - Context.Owner.transform.position).normalized;
-				Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+				var direction = (Context.CurrentTarget.transform.position - Context.Owner.transform.position).normalized;
+				var lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
 				Context.Owner.transform.rotation = lookRotation;
 			}
 		}
 
+		//----------------------------------------------------------------
 		private void ShootTarget()
 		{
 			var isVisible = FSMHelper.IsInsideConeSphereHitTest(Context.Owner.transform,
-				Context.CurrentTarget.transform,
-				AttackDistance, FieldOfView, ObstacleMask,
-				HitTestThickness);
+					Context.CurrentTarget.transform,
+					AttackDistance,
+					FieldOfView,
+					ObstacleMask,
+					HitTestThickness);
 			if (isVisible)
 			{
 				Weapon.Fire();
 			}
 		}
 
+		//----------------------------------------------------------------
 		public override void DrawGizmos()
 		{
 			FSMHelper.DrawCone(Context.Owner.transform, AttackDistance, FieldOfView);
 			if (Context.CurrentTarget != null)
 			{
-				FSMHelper.DrawSphereCast(Context.Owner.transform, Context.CurrentTarget.transform,
-					HitTestThickness);
+				FSMHelper.DrawSphereCast(Context.Owner.transform, Context.CurrentTarget.transform, HitTestThickness);
 			}
 		}
 

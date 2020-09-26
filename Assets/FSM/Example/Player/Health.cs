@@ -52,7 +52,7 @@ namespace FSM.Example.Player
 
 		private void OnDeath()
 		{
-			GameObject.Destroy(this.gameObject);
+			Destroy(gameObject);
 		}
 	}
 }

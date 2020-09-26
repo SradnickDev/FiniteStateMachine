@@ -21,8 +21,7 @@ namespace FSM.Example.Player
 
 		private void FireBullet(Vector3 direction)
 		{
-			var bullet = Instantiate(Bullet, transform.position + direction + transform.right * 0.5f,
-					Quaternion.identity);
+			var bullet = Instantiate(Bullet, transform.position + direction + transform.right * 0.5f, Quaternion.identity);
 			bullet.Initialize(direction, Owner);
 		}
 	}

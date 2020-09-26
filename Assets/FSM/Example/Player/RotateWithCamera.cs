@@ -17,12 +17,7 @@ namespace FSM.Example.Player
 		{
 			if (!m_camera) return;
 
-			transform.eulerAngles = new Vector3
-					(
-					m_camera.transform.eulerAngles.x,
-					m_camera.transform.eulerAngles.y,
-					0
-					);
+			transform.eulerAngles = new Vector3(m_camera.transform.eulerAngles.x, m_camera.transform.eulerAngles.y, 0);
 		}
 	}
 }

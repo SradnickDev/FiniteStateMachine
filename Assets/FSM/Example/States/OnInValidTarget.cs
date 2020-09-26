@@ -22,7 +22,7 @@ namespace FSM.Example.States
 			}
 
 			var isToFar = Vector3.Distance(context.CurrentTarget.transform.position,
-										   context.Owner.transform.position) > MaxDistance;
+					context.Owner.transform.position) > MaxDistance;
 
 			if (isToFar)
 			{

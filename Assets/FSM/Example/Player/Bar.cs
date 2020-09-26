@@ -5,7 +5,7 @@ namespace FSM.Example.Player
 	public class Bar : MonoBehaviour
 	{
 		[SerializeField] private SpriteRenderer FillBar = null;
-		[SerializeField] float m_maxX = 300f;
+		[SerializeField] private float MaxX = 300f;
 
 		public void OnValueChanged(float currentHealth, float maxHealth)
 		{
@@ -13,7 +13,7 @@ namespace FSM.Example.Player
 			percentage = Mathf.Clamp01(percentage);
 
 			var scale = FillBar.transform.localScale;
-			scale.x = m_maxX * percentage;
+			scale.x = MaxX * percentage;
 			FillBar.transform.localScale = scale;
 		}
 	}

@@ -52,6 +52,8 @@ namespace FSM
 			StateMachine.ChangeState(typeName);
 		}
 
-		public virtual void DrawGizmos() { }
+		public virtual void DrawGizmos()
+		{
+		}
 	}
 }

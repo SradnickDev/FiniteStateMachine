@@ -25,6 +25,7 @@ namespace FSM.Example.Player
 		private void OnTriggerEnter(Collider other)
 		{
 			if (other.gameObject == m_owner.gameObject) return;
+
 			if (!other.CompareTag(m_owner.tag))
 			{
 				DealDamage(other);

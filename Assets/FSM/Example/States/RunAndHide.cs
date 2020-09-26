@@ -40,8 +40,7 @@ namespace FSM.Example.States
 		private void FindObstacle()
 		{
 			var currentPos = Context.Owner.transform.position;
-			var hits =
-				Physics.OverlapSphereNonAlloc(currentPos, ScanRadius, m_hitResults, ObstacleMask);
+			var hits = Physics.OverlapSphereNonAlloc(currentPos, ScanRadius, m_hitResults, ObstacleMask);
 
 			if (hits > 0)
 			{
@@ -52,8 +51,7 @@ namespace FSM.Example.States
 
 		private void CalculateHidePosition()
 		{
-			if (NavMesh.SamplePosition(m_targetToHide.transform.position, out var hit, 4,
-									   NavMesh.AllAreas))
+			if (NavMesh.SamplePosition(m_targetToHide.transform.position, out var hit, 4, NavMesh.AllAreas))
 			{
 				m_hidePosition = hit.position;
 			}

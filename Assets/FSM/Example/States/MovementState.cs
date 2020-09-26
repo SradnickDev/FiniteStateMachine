@@ -19,6 +19,7 @@ namespace FSM.Example.States
 		{
 			m_nextSearch = 0;
 			m_nextPathIdx = 0;
+
 			//find nearest waypoint, maybe if the state will be entered the bot is to far from the old waypoint
 			//so find a new one makes more sense
 			FindNearestPathPoint();
@@ -37,8 +38,8 @@ namespace FSM.Example.States
 		private void FollowPath()
 		{
 			var distanceToPoint =
-				Vector3.Distance(Context.Owner.transform.position,
-								 PathPoints[m_nextPathIdx].position);
+					Vector3.Distance(Context.Owner.transform.position,
+							PathPoints[m_nextPathIdx].position);
 			var reachedPoint = distanceToPoint <= Context.OwnerAgent.stoppingDistance;
 
 			if (reachedPoint)
@@ -65,6 +66,7 @@ namespace FSM.Example.States
 		private void SearchTarget()
 		{
 			if (Context.CurrentTarget != null) return;
+
 			Player target = null;
 
 			//interval search
@@ -78,9 +80,10 @@ namespace FSM.Example.States
 			if (target == null) return;
 
 			var isValidTarget = FSMHelper.IsInsideConeLineHitTest(Context.Owner.transform,
-																	target.transform,
-																	TargetDetectionRange,
-																	FieldOfView, ObstacleMask);
+					target.transform,
+					TargetDetectionRange,
+					FieldOfView,
+					ObstacleMask);
 			if (!isValidTarget) return;
 
 			//if valid target is available
@@ -92,12 +95,15 @@ namespace FSM.Example.States
 
 #endregion
 
+		//----------------------------------------------------------------
 		public override void DrawGizmos()
 		{
 			FSMHelper.DrawCone(Context.Owner.transform, TargetDetectionRange, FieldOfView);
 		}
 
 		//----------------------------------------------------------------
-		public override void OnLeave() { }
+		public override void OnLeave()
+		{
+		}
 	}
 }
