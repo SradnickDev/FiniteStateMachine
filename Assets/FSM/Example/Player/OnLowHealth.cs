@@ -1,7 +1,7 @@
 using FSM.Example.States;
 using UnityEngine;
 
-namespace FSM
+namespace FSM.Example.Player
 {
 	[System.Serializable]
 	public class OnLowHealth : Decision

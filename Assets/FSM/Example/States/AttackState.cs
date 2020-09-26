@@ -1,3 +1,4 @@
+using FSM.Example.Player;
 using UnityEngine;
 
 namespace FSM.Example.States
@@ -26,7 +27,6 @@ namespace FSM.Example.States
 		//----------------------------------------------------------------
 		public override void OnUpdate()
 		{
-			Debug.Log(Context.CurrentTarget);
 			if (Context.CurrentTarget == null) return;
 			FollowTarget();
 			ShootTarget();
@@ -41,7 +41,7 @@ namespace FSM.Example.States
 			if (Context.OwnerAgent.remainingDistance <= AttackDistance / 2f)
 			{
 				Vector3 direction = (Context.CurrentTarget.transform.position - Context.Owner.transform.position).normalized;
-				Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z)); 
+				Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
 				Context.Owner.transform.rotation = lookRotation;
 			}
 		}
@@ -49,10 +49,10 @@ namespace FSM.Example.States
 		private void ShootTarget()
 		{
 			var isVisible = FSMHelper.IsInsideConeSphereHitTest(Context.Owner.transform,
-																Context.CurrentTarget.transform,
-																AttackDistance, FieldOfView, ObstacleMask,
-																HitTestThickness);
-			if(isVisible)
+				Context.CurrentTarget.transform,
+				AttackDistance, FieldOfView, ObstacleMask,
+				HitTestThickness);
+			if (isVisible)
 			{
 				Weapon.Fire();
 			}
@@ -64,7 +64,7 @@ namespace FSM.Example.States
 			if (Context.CurrentTarget != null)
 			{
 				FSMHelper.DrawSphereCast(Context.Owner.transform, Context.CurrentTarget.transform,
-										 HitTestThickness);
+					HitTestThickness);
 			}
 		}
 

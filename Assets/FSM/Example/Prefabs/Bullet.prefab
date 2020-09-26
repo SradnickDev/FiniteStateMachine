@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Rigidbody: {fileID: 5836793559614864144}
-  Force: 8
+  Force: 10
   ForceMode: 1
   Damage: 10
   LifeTime: 2

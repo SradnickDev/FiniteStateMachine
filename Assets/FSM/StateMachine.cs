@@ -10,14 +10,14 @@ using UnityEngine.Events;
 namespace FSM
 {
 	[Serializable]
-	public class OnStateChanged : UnityEvent<string> { }
+	public class OnStateChanged : UnityEvent<string>
+	{
+	}
 
 	[RequireComponent(typeof(Player))]
 	[RequireComponent(typeof(NavMeshAgent))]
 	public abstract class StateMachine : MonoBehaviour
 	{
-		public OnStateChanged StateChanged;
-
 		//just to display what state is currently active
 		//can also be used to check if in a specific state
 		[ReadOnly] public string CurrentState;
@@ -58,8 +58,8 @@ namespace FSM
 			m_states = new Dictionary<string, State>();
 			Context = new Context
 			{
-				Owner = GetComponent<Player>(),
-				OwnerAgent = GetComponent<NavMeshAgent>()
+					Owner = GetComponent<Player>(),
+					OwnerAgent = GetComponent<NavMeshAgent>()
 			};
 
 			foreach (var state in States)
@@ -101,11 +101,9 @@ namespace FSM
 		{
 			if (m_states.ContainsKey(newState) && !string.Equals(CurrentState, newState))
 			{
-				StateChanged?.Invoke(newState);
-				
 				m_previousState = m_currentState;
 				m_previousState?.OnLeave();
-				
+
 				m_currentState = m_states[newState];
 				m_currentState.OnEnter();
 				CurrentState = newState;
@@ -151,6 +149,7 @@ namespace FSM
 		protected void UpdateState()
 		{
 			if (!Active) return;
+
 			if (m_currentState != null)
 			{
 				m_currentState.OnUpdate();

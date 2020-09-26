@@ -1,3 +1,4 @@
+using FSM.Example.Player;
 using UnityEngine;
 
 namespace FSM.Example.States

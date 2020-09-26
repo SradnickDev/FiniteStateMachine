@@ -1,18 +1,20 @@
-﻿using UnityEngine;
-using System;
-using FSM;
+﻿using System;
+using UnityEngine;
 
-[Serializable]
-public class RandomMovementState : State
+namespace FSM.Example.States
 {
-	[SerializeField] private float MaxRange;
-	private Vector3 m_nextDestination;
-	public override void OnEnter() { }
-
-	public override void OnUpdate()
+	[Serializable]
+	public class RandomMovementState : State
 	{
-		
-	}
+		[SerializeField] private float MaxRange;
+		private Vector3 m_nextDestination;
+		public override void OnEnter() { }
 
-	public override void OnLeave() { }
+		public override void OnUpdate()
+		{
+		
+		}
+
+		public override void OnLeave() { }
+	}
 }
